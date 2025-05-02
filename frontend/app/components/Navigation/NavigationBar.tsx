@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { Home, User, Search, MessageSquare } from "lucide-react";
-import { NavigationBarProps, TabName } from '@/types';
+import { NavigationBarProps } from '@/types';
 import Tab from './Tab';
 
 const NavigationBar: React.FC<NavigationBarProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 text-purple-800">
       <Tab 
         icon={<Home size={24} />} 
         label="Home" 

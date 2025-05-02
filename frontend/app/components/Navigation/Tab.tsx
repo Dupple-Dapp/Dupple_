@@ -6,11 +6,11 @@ const Tab: React.FC<TabProps> = ({ icon, label, active, onClick }) => {
     <button 
       onClick={onClick}
       className={`flex flex-col items-center justify-center p-2 ${
-        active ? "text-pink-500" : "text-gray-500"
+        active ? "text-purple-800" : "text-gray-500"
       }`}
     >
       {icon}
-      <span className="text-xs mt-1">{label}</span>
+      <span className="text-xs mt-1 text-purple-800">{label}</span>
     </button>
   );
 };

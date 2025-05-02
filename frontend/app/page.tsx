@@ -27,7 +27,7 @@ import Link from "next/link";
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
-  
+
   const addFrame = useAddFrame();
   const openUrl = useOpenUrl();
 
@@ -69,7 +69,6 @@ export default function App() {
     return null;
   }, [context, frameAdded, handleAddFrame]);
 
-
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white text-gray-800">
       <div className="w-full max-w-md mx-auto px-4 py-3">
@@ -100,61 +99,72 @@ export default function App() {
             {/* Hero Section */}
             <div className="mb-6">
               <div className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-700 to-purple-500 mb-2">
-                Dupple
+                dupple
               </div>
               <p className="text-lg text-gray-600 mb-8">
                 Find your perfect match on Chain
               </p>
-              
-              {/* App Showcase Visual */}
+
               <div className="relative w-64 h-64 mx-auto mb-8">
                 <div className="absolute top-0 left-0 w-56 h-56 bg-purple-100 rounded-lg transform rotate-6"></div>
                 <div className="absolute top-0 left-0 w-56 h-56 bg-purple-200 rounded-lg transform -rotate-3"></div>
-                <div className="absolute top-0 left-0 w-56 h-56 bg-white shadow-md rounded-lg flex items-center justify-center">
-                  <div className="text-3xl text-purple-600">
-                    <Icon name="heart" size="lg" />
+                <div
+                  className="absolute top-0 left-0 w-56 h-56 bg-white shadow-md rounded-lg overflow-hidden"
+                  style={{
+                    backgroundImage: `url('heroimg.jpg')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <div className="absolute bottom-2 left-0 w-full text-center">
+                    <div className="text-purple-600 font-medium bg-white bg-opacity-75 py-1 mx-4 rounded">
+                      Dupple
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <Button
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-medium text-lg transition-all shadow-lg"
-              >
-                <Link href="/register">
-                Get Started
-                </Link>
+              <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-medium text-lg transition-all shadow-lg">
+                <Link href="/register">Get Started</Link>
               </Button>
             </div>
-            
+
             {/* Features Grid */}
             <div className="grid grid-cols-2 gap-4 mt-8 w-full max-w-sm">
               <div className="bg-purple-50 p-4 rounded-lg">
                 <div className="text-purple-600 mb-2">
-                <Users />
+                  <Users />
                 </div>
                 <h3 className="font-medium">Meet Others</h3>
-                <p className="text-sm text-gray-600">Connect with like-minded crypto enthusiasts</p>
+                <p className="text-sm text-gray-600">
+                  Connect with like-minded crypto enthusiasts
+                </p>
               </div>
               <div className="bg-purple-50 p-4 rounded-lg">
                 <div className="text-purple-600 mb-2">
-                <Lock />
+                  <Lock />
                 </div>
                 <h3 className="font-medium">Secure</h3>
-                <p className="text-sm text-gray-600">Built on Base with wallet verification</p>
+                <p className="text-sm text-gray-600">
+                  Built on Base with wallet verification
+                </p>
               </div>
               <div className="bg-purple-50 p-4 rounded-lg">
                 <div className="text-purple-600 mb-2">
-                <Zap />
+                  <Zap />
                 </div>
                 <h3 className="font-medium">Fast</h3>
-                <p className="text-sm text-gray-600">Quick and seamless experience</p>
+                <p className="text-sm text-gray-600">
+                  Quick and seamless experience
+                </p>
               </div>
               <div className="bg-purple-50 p-4 rounded-lg">
                 <div className="text-purple-600 mb-2">
-                <Gift />
+                  <Gift />
                 </div>
                 <h3 className="font-medium">Rewards</h3>
-                <p className="text-sm text-gray-600">Earn rewards for participation</p>
+                <p className="text-sm text-gray-600">
+                  Earn rewards for participation
+                </p>
               </div>
             </div>
           </div>
