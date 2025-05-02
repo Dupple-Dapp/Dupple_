@@ -10,7 +10,7 @@ const Tab: React.FC<TabProps> = ({ icon, label, active, onClick }) => {
       }`}
     >
       {icon}
-      <span className="text-xs mt-1 text-purple-800">{label}</span>
+      <span className="text-xs mt-1 text-pruple">{label}</span>
     </button>
   );
 };
