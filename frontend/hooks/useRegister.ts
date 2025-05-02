@@ -20,7 +20,6 @@ export const useRegisterUser = () => {
     
     try {
       // This is a placeholder for the actual blockchain registration
-      // You would replace this with your actual implementation
       console.log("Registering user...", {
         ens,
         description,

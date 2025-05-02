@@ -69,12 +69,6 @@ export default function App() {
     return null;
   }, [context, frameAdded, handleAddFrame]);
 
-  // Function to navigate to registration page
-  const navigateToRegister = () => {
-    // You would implement navigation to your existing registration page here
-    // This could be router.push('/register') or any other navigation method
-    console.log("Navigating to registration page");
-  };
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white text-gray-800">
@@ -124,7 +118,6 @@ export default function App() {
               </div>
               
               <Button
-                onClick={navigateToRegister}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-medium text-lg transition-all shadow-lg"
               >
                 <Link href="/register">
@@ -167,7 +160,7 @@ export default function App() {
           </div>
         </main>
 
-        <footer className="mt-2 pt-4 flex justify-center">
+        <div className="mt-2 pt-4 flex justify-center">
           <Button
             variant="ghost"
             size="sm"
@@ -176,7 +169,7 @@ export default function App() {
           >
             Built on Base with MiniKit
           </Button>
-        </footer>
+        </div>
       </div>
     </div>
   );
