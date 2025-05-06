@@ -1,27 +1,30 @@
 "use client";
 
-import React, { useState } from 'react';
-import { TabName } from '../../types';
-import Header from '../components/Layout/Header';
-import NavigationBar from '../components/Navigation/NavigationBar';
-import HomePage from '../components/Pages/HomePage';
-import ExplorePage from '../components/Pages/ExplorePage';
-import MessagesPage from '../components/Pages/MessagePage';
-import ProfilePage from '../components/Pages/ProfilePage';
+import React, { useState } from "react";
+import { TabName } from "../../types";
+import Header from "../components/Layout/Header";
+import NavigationBar from "../components/Navigation/NavigationBar";
+import HomePage from "../components/Pages/HomePage";
+import ExplorePage from "../components/Pages/ExplorePage";
+import MessagesPage from "../components/Pages/MessagePage";
+import ProfilePage from "../components/Pages/ProfilePage";
+import Likes from "../components/Pages/Likes";
 
 const Page: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabName>('profile');
+  const [activeTab, setActiveTab] = useState<TabName>("profile");
 
   // Render the active page based on the selected tab
   const renderPage = () => {
     switch (activeTab) {
-      case 'home':
+      case "home":
         return <HomePage />;
-      case 'explore':
+      case "explore":
         return <ExplorePage />;
-      case 'messages':
+      case "likes":
+        return <Likes />;
+      case "messages":
         return <MessagesPage />;
-      case 'profile':
+      case "profile":
         return <ProfilePage />;
       default:
         return <ProfilePage />;
@@ -31,9 +34,7 @@ const Page: React.FC = () => {
   return (
     <div className="bg-white text-gray-700 h-screen relative pb-16">
       <Header activeTab={activeTab} />
-      <div className="overflow-y-auto h-full pb-16">
-        {renderPage()}
-      </div>
+      <div className="overflow-y-auto h-full pb-16">{renderPage()}</div>
       <NavigationBar activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
