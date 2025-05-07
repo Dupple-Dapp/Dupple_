@@ -21,7 +21,6 @@ import {
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { Button } from "./components/DemoComponents";
 import { Icon } from "./components/DemoComponents";
-import { Gift, Lock, Users, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function App() {
@@ -126,46 +125,6 @@ export default function App() {
               <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-medium text-lg transition-all shadow-lg">
                 <Link href="/register">Get Started</Link>
               </Button>
-            </div>
-
-            {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-4 mt-8 w-full max-w-sm">
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-purple-600 mb-2">
-                  <Users />
-                </div>
-                <h3 className="font-medium">Meet Others</h3>
-                <p className="text-sm text-gray-600">
-                  Connect with like-minded crypto enthusiasts
-                </p>
-              </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-purple-600 mb-2">
-                  <Lock />
-                </div>
-                <h3 className="font-medium">Secure</h3>
-                <p className="text-sm text-gray-600">
-                  Built on Base with wallet verification
-                </p>
-              </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-purple-600 mb-2">
-                  <Zap />
-                </div>
-                <h3 className="font-medium">Fast</h3>
-                <p className="text-sm text-gray-600">
-                  Quick and seamless experience
-                </p>
-              </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-purple-600 mb-2">
-                  <Gift />
-                </div>
-                <h3 className="font-medium">Rewards</h3>
-                <p className="text-sm text-gray-600">
-                  Earn rewards for participation
-                </p>
-              </div>
             </div>
           </div>
         </main>
