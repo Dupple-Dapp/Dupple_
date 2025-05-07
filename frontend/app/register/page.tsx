@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle, ChevronRight } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 import ProfileStep from "../components/RegisterationSteps/ProfileSteps";
 import PreferencesStep from "../components/RegisterationSteps/PreferenceSteps";
 import InterestsStep from "../components/RegisterationSteps/InterestsSteps";
 import PhotosStep from "../components/RegisterationSteps/PhotoSteps";
-
 import { Enums } from "@/utils/enums";
+import { useRegisterUser } from "@/hooks/useRegisterUser";
+import { useRouter } from "next/navigation";
 
 export default function RegistrationPage() {
   const [step, setStep] = useState(1);
-  const [isProcessing, setIsProcessing] = useState(false);
+    const router = useRouter();
+    const { registerUser, isPending, isSuccess, error } = useRegisterUser();
 
   const [formData, setFormData] = useState({
     ens: "",
@@ -81,7 +83,7 @@ export default function RegistrationPage() {
   };
 
   const handleSubmit = async () => {
-    if (isProcessing) return;
+    if (isPending) return;
 
     try {
       if (
@@ -93,25 +95,38 @@ export default function RegistrationPage() {
         return;
       }
 
-      setIsProcessing(true);
-      
       console.log("FormData:", formData);
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success("Profile registered successfully!");
-      
-      setTimeout(() => {
-        window.location.href = "/profile";
-      }, 1000);
-      
+
+      registerUser({
+        ens: formData.ens,
+        description: formData.description,
+        profilePic: formData.profilePic,
+        interestedIn: formData.interestedIn,
+        gender: formData.gender,
+        relationshipStatus: formData.relationshipStatus,
+        height: formData.height,
+        hobbyIndices: formData.selectedHobbies,
+        reason: formData.reasonForJoining,
+        drinking: formData.drinking,
+        smoking: formData.smoking,
+      });
     } catch (error) {
-      console.error("Registration simulation error:", error);
-      toast.error("Registration failed. Please try again.");
-    } finally {
-      setIsProcessing(false);
+      console.error("Registration error:", error);
+      toast.error("Failed to send transaction");
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Transaction confirmed on blockchain!");
+      router.push("/profile");
+    }
+    if (error) {
+      console.error("Transaction error:", error);
+      toast.error("Transaction failed");
+    }
+  }, [isSuccess, error, router]);
+
 
   const renderStepIndicator = () => {
     return (
@@ -241,16 +256,16 @@ export default function RegistrationPage() {
               onClick={nextStep}
               disabled={
                 (step === 3 && formData.selectedHobbies.length === 0) ||
-                isProcessing
+                isPending
               }
               className={`py-2 px-6 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 flex items-center ${
                 (step === 3 && formData.selectedHobbies.length === 0) ||
-                isProcessing
+                isPending
                   ? "opacity-50 cursor-not-allowed"
                   : ""
               }`}
             >
-              {isProcessing ? (
+              {isPending ? (
                 "Processing..."
               ) : step === totalSteps ? (
                 "Register on Blockchain"
