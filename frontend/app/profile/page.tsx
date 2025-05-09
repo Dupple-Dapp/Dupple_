@@ -5,7 +5,7 @@ import { TabName } from "../../types";
 import Header from "../components/Layout/Header";
 import NavigationBar from "../components/Navigation/NavigationBar";
 import HomePage from "../components/Pages/HomePage";
-import ExplorePage from "../components/Pages/ExplorePage";
+// import ExplorePage from "../components/Pages/ExplorePage";
 import MessagesPage from "../components/Pages/MessagePage";
 import ProfilePage from "../components/Pages/ProfilePage";
 import Likes from "../components/Pages/Likes";
@@ -18,8 +18,8 @@ const Page: React.FC = () => {
     switch (activeTab) {
       case "home":
         return <HomePage />;
-      case "explore":
-        return <ExplorePage />;
+      // case "explore":
+      //   return <ExplorePage />;
       case "likes":
         return <Likes />;
       case "messages":

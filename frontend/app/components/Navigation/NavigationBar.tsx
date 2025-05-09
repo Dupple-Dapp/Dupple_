@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { Home, User, Search, MessageSquare, Heart } from "lucide-react";
+// import { Home, User, Search, MessageSquare, Heart } from "lucide-react";
+import { Home, User, MessageSquare, Heart } from "lucide-react";
 import { NavigationBarProps } from '@/types';
 import Tab from './Tab';
 
@@ -14,12 +15,12 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ activeTab, setActiveTab }
         active={activeTab === "home"}
         onClick={() => setActiveTab("home")}
       />
-      <Tab
+      {/* <Tab
         icon={<Search size={24} />}
         label="Explore"
         active={activeTab === "explore"}
         onClick={() => setActiveTab("explore")}
-      />
+      /> */}
       <Tab
         icon={<Heart size={24} />}
         label="Likes"

@@ -1,17 +1,24 @@
-// pages/messages.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
-import { User } from "lucide-react";
+import { User, MoreVertical, Ban, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useMatches } from "@/hooks/useMatches";
-import { useMessages } from "@/hooks/useMessages";
+import { useBlockUser } from "@/hooks/useBlockUser";
+import { useUnblockUser } from "@/hooks/useUnblockUser";
+import { useGetMatches } from "@/hooks/useGetMatches";
+import { useSendMessage } from "@/hooks/useSendMessage";
+import { useGetMessages } from "@/hooks/useGetMessages";
 
 const MessagesPage: React.FC = () => {
   const { address } = useAccount();
-  const { matches } = useMatches();
+  const { matches } = useGetMatches();
   const [selectedMatch, setSelectedMatch] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState("");
-  const { messages, loading, sendMessage } = useMessages(selectedMatch);
+  const { messages, loading } = useGetMessages(selectedMatch);
+  const { sendMessageToUser } = useSendMessage();
+  const { blockUser } = useBlockUser();
+  const { unblockUser } = useUnblockUser();
+  const [showMenu, setShowMenu] = useState<string | null>(null);
+  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-select first match if none selected
@@ -30,8 +37,23 @@ const MessagesPage: React.FC = () => {
     e.preventDefault();
     if (!messageInput.trim() || !selectedMatch) return;
 
-    await sendMessage(messageInput);
+    await sendMessageToUser(selectedMatch, messageInput);
     setMessageInput("");
+  };
+
+  const handleBlockUser = async (userAddress: string) => {
+    await blockUser(userAddress);
+    setBlockedUsers([...blockedUsers, userAddress]);
+    setShowMenu(null);
+    if (selectedMatch === userAddress) {
+      setSelectedMatch(null);
+    }
+  };
+
+  const handleUnblockUser = async (userAddress: string) => {
+    await unblockUser(userAddress);
+    setBlockedUsers(blockedUsers.filter((addr) => addr !== userAddress));
+    setShowMenu(null);
   };
 
   const formatTime = (timestamp: string) => {
@@ -39,10 +61,13 @@ const MessagesPage: React.FC = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  if (!matches || matches.length === 0) {
+  const filteredMatches =
+    matches?.filter((match) => !blockedUsers.includes(match)) || [];
+
+  if (!filteredMatches || filteredMatches.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-screen p-4 text-center">
-        <div className="text-xl mb-4">You don't have any matches yet</div>
+        <div className="text-xl mb-4">You do not have any matches yet</div>
         <p className="text-gray-600 mb-6">
           Keep swiping to find your perfect match!
         </p>
@@ -65,10 +90,10 @@ const MessagesPage: React.FC = () => {
           />
         </div>
         <div className="overflow-y-auto h-[calc(100%-60px)]">
-          {matches.map((matchAddress) => (
+          {filteredMatches.map((matchAddress) => (
             <div
               key={matchAddress}
-              className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 ${
+              className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 relative ${
                 selectedMatch === matchAddress ? "bg-pink-50" : ""
               }`}
               onClick={() => setSelectedMatch(matchAddress)}
@@ -94,6 +119,46 @@ const MessagesPage: React.FC = () => {
                   )}
                 </div>
               )}
+
+              {/* Three-dot menu button */}
+              <button
+                className="p-1 rounded-full hover:bg-gray-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMenu(showMenu === matchAddress ? null : matchAddress);
+                }}
+              >
+                <MoreVertical className="w-4 h-4 text-gray-500" />
+              </button>
+
+              {/* Dropdown menu */}
+              {showMenu === matchAddress && (
+                <div className="absolute right-4 top-14 z-10 bg-white shadow-lg rounded-md py-1 w-40">
+                  {blockedUsers.includes(matchAddress) ? (
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100 flex items-center gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUnblockUser(matchAddress);
+                      }}
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      Unblock User
+                    </button>
+                  ) : (
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBlockUser(matchAddress);
+                      }}
+                    >
+                      <Ban className="w-4 h-4" />
+                      Block User
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -103,13 +168,34 @@ const MessagesPage: React.FC = () => {
       {selectedMatch ? (
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
-          <div className="p-4 border-b border-gray-200 bg-white flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-              <User className="text-gray-500 w-5 h-5" />
+          <div className="p-4 border-b border-gray-200 bg-white flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                <User className="text-gray-500 w-5 h-5" />
+              </div>
+              <h3 className="font-medium">
+                {selectedMatch.slice(0, 6)}...{selectedMatch.slice(-4)}
+              </h3>
             </div>
-            <h3 className="font-medium">
-              {selectedMatch.slice(0, 6)}...{selectedMatch.slice(-4)}
-            </h3>
+
+            {/* Block button in header */}
+            {blockedUsers.includes(selectedMatch) ? (
+              <button
+                className="flex items-center gap-1 text-sm text-green-600 px-3 py-1 rounded hover:bg-gray-100"
+                onClick={() => handleUnblockUser(selectedMatch)}
+              >
+                <CheckCircle className="w-4 h-4" />
+                Unblock
+              </button>
+            ) : (
+              <button
+                className="flex items-center gap-1 text-sm text-red-600 px-3 py-1 rounded hover:bg-gray-100"
+                onClick={() => handleBlockUser(selectedMatch)}
+              >
+                <Ban className="w-4 h-4" />
+                Block
+              </button>
+            )}
           </div>
 
           {/* Messages */}
@@ -159,34 +245,36 @@ const MessagesPage: React.FC = () => {
           </div>
 
           {/* Message Input */}
-          <form
-            onSubmit={handleSendMessage}
-            className="p-4 border-t border-gray-200 bg-white"
-          >
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 px-4"
-              />
-              <button
-                type="submit"
-                disabled={!messageInput.trim()}
-                className="bg-pink-500 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5"
+          {!blockedUsers.includes(selectedMatch) && (
+            <form
+              onSubmit={handleSendMessage}
+              className="p-4 border-t border-gray-200 bg-white"
+            >
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  placeholder="Type a message..."
+                  className="flex-1 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 px-4"
+                />
+                <button
+                  type="submit"
+                  disabled={!messageInput.trim()}
+                  className="bg-pink-500 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-                </svg>
-              </button>
-            </div>
-          </form>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-center bg-gray-50">

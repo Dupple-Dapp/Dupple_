@@ -126,6 +126,36 @@ contract Dupple is Ownable {
         emit Events.UserRegistered(msg.sender);
     }
 
+    function editProfile(
+        string memory _ens,
+        string memory _description,
+        string memory _profilePic,
+        Enums.Gender _interestedIn,
+        Enums.RelationshipStatus _rs,
+        uint[] memory hobbyIndices,
+        Enums.Drinking _drinking,
+        Enums.Smoking _smoking
+    ) public onlyRegistered {
+        require(hobbyIndices.length > 0, "Pick at least one hobby");
+
+        string[] memory selectedHobbies = new string[](hobbyIndices.length);
+        for (uint i = 0; i < hobbyIndices.length; i++) {
+            uint index = hobbyIndices[i];
+            require(index < allowedHobbies.length, "Invalid hobby index");
+            selectedHobbies[i] = allowedHobbies[index];
+        }
+
+        UserProfile storage profile = users[msg.sender];
+        profile.ens = _ens;
+        profile.description = _description;
+        profile.profilePictureNFT = _profilePic;
+        profile.hobbies = selectedHobbies;
+        profile.relationshipStatus = _rs;
+        profile.drinking = _drinking;
+        profile.smoking = _smoking;
+        profile.interestedIn = _interestedIn;
+    }
+
     function getTop10PercentUsers()
         public
         payable
@@ -177,14 +207,6 @@ contract Dupple is Ownable {
         return users[user];
     }
 
-    function updateProfilePicture(string memory uri) external onlyRegistered {
-        users[msg.sender].profilePictureNFT = uri;
-    }
-
-    function updateDescription(string memory _desc) external onlyRegistered {
-        users[msg.sender].description = _desc;
-    }
-
     function sendMessage(
         address to,
         string memory content
@@ -203,12 +225,13 @@ contract Dupple is Ownable {
     function getMessages(
         address sender,
         address receiver
-    ) external view onlyOwner returns (Message[] memory) {
+    ) external view returns (Message[] memory) {
         return messages[sender][receiver];
     }
 
     function like(address user) external onlyRegistered {
         require(user != msg.sender, "Cannot like yourself");
+        require(users[user].registered, "User not registered");
 
         if (liked[user][msg.sender]) {
             _createMatch(user);
@@ -276,9 +299,7 @@ contract Dupple is Ownable {
         }
     }
 
-    function getMatches(
-        address user
-    ) external view onlyOwner returns (address[] memory) {
+    function getMatches(address user) external view returns (address[] memory) {
         return userMatches[user];
     }
 
