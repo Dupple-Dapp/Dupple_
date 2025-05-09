@@ -1,4 +1,7 @@
-export type TabName = 'home' | 'explore' | 'messages' | 'profile' | 'likes';
+// export type TabName = 'home' | 'explore' | 'messages' | 'profile' | 'likes';
+
+export type TabName = "home" | "messages" | "profile" | "likes";
+
 
 export interface TabProps {
   icon: React.ReactNode;

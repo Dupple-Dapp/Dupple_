@@ -7,7 +7,7 @@ import { HeaderProps, TabName } from '@/types';
 const Header: React.FC<HeaderProps> = ({ activeTab }) => {
   const titles: Record<TabName, string> = {
     home: "Home",
-    explore: "Explore",
+    // explore: "Explore",
     likes: "Your Likes", 
     messages: "Messages",
     profile: "Profile"

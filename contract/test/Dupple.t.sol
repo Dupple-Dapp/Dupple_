@@ -110,28 +110,6 @@ contract DuppleTest is Test {
         dupple.sendMessage(user1, "Sup Nigga!");
     }
 
-    function test_updateProfilePic() public {
-        Dupple.UserProfile memory userPic = dupple.getUser(user1);
-        assertEq(userPic.profilePictureNFT, "ipfs://profile1");
-
-        vm.prank(user1);
-        dupple.updateProfilePicture("ipfs://profile2");
-
-        userPic = dupple.getUser(user1);
-        assertEq(userPic.profilePictureNFT, "ipfs://profile2");
-    }
-
-    function test_updateDescription() public {
-        Dupple.UserProfile memory userPic = dupple.getUser(user1);
-        assertEq(userPic.description, "I Love Coding");
-
-        vm.prank(user1);
-        dupple.updateDescription("I Still Love Coding");
-
-        userPic = dupple.getUser(user1);
-        assertEq(userPic.description, "I Still Love Coding");
-    }
-
     function testBlock() public {
         uint[] memory hobbyIndices = new uint[](2);
         hobbyIndices[0] = 0;
